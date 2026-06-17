@@ -107,11 +107,11 @@ public class CaseDetailsService {
             final List<CourtScheduleDto> courtSchedule,
             final Map<CourtCacheKey, CourtHouseDto> courtHouseCache) {
         return courtSchedule.stream()
-            .map(schedule -> schedule.getHearings().stream()
+            .map(courtScheduleDto -> courtScheduleDto.getHearings().stream()
                 .map(this::getHearingDetails)
                 .filter(Objects::nonNull)
                 .min(getCaseDetailsHearingDtoComparator())
-                .map(h -> enrichHearingWithCourtDetails(caseUrn, courtHouseAccessToken, h, courtHouseCache))
+                .map(caseDetailsHearingDto -> enrichHearingWithCourtDetails(caseUrn, courtHouseAccessToken, caseDetailsHearingDto, courtHouseCache))
                 .orElse(null))
             .filter(Objects::nonNull)
             .toList();
@@ -122,10 +122,10 @@ public class CaseDetailsService {
             final List<CourtScheduleDto> courtSchedule,
             final Map<CourtCacheKey, CourtHouseDto> courtHouseCache) {
         return courtSchedule.stream()
-            .map(schedule -> schedule.getHearings().stream()
+            .map(courtScheduleDto -> courtScheduleDto.getHearings().stream()
                 .map(this::getPastHearingDetails)
                 .filter(Objects::nonNull)
-                .map(h -> enrichHearingWithCourtDetails(caseUrn, courtHouseAccessToken, h, courtHouseCache))
+                .map(caseDetailsHearingDto -> enrichHearingWithCourtDetails(caseUrn, courtHouseAccessToken, caseDetailsHearingDto, courtHouseCache))
                 .toList())
             .flatMap(List::stream)
             .toList();
@@ -179,9 +179,9 @@ public class CaseDetailsService {
         }
 
         boolean hasAnyCurrentOrFutureSitting = sittings.stream()
-            .anyMatch(s -> {
+            .anyMatch(courtSittingDto -> {
                 try {
-                    return !parse(s.getSittingStart()).toLocalDate().isBefore(LocalDate.now());
+                    return !parse(courtSittingDto.getSittingStart()).toLocalDate().isBefore(LocalDate.now());
                 } catch (Exception e) {
                     return false;
                 }
@@ -205,9 +205,9 @@ public class CaseDetailsService {
                 Comparator.nullsLast(Comparator.naturalOrder())
             )
             .thenComparing((CaseDetailsHearingDto dto) -> hasFixedDateHearing(dto) ? 0 : 1)
-            .thenComparingInt((CaseDetailsHearingDto dto) ->
-                                  nonNull(dto.getHearingType())
-                                      && HEARING_TYPE_TRIAL_PATTERN.matcher(dto.getHearingType()).find()
+            .thenComparingInt((CaseDetailsHearingDto caseDetailsHearingDto) ->
+                                  nonNull(caseDetailsHearingDto.getHearingType())
+                                      && HEARING_TYPE_TRIAL_PATTERN.matcher(caseDetailsHearingDto.getHearingType()).find()
                                       ? 0 : 1
             );
     }
@@ -216,7 +216,7 @@ public class CaseDetailsService {
         return nonNull(hearingDto.getCourtSittings())
             && !hearingDto.getCourtSittings().isEmpty()
             && hearingDto.getCourtSittings().stream()
-            .anyMatch(s -> nonNull(s.getSittingStart()) && !s.getSittingStart().isEmpty());
+            .anyMatch(caseDetailsCourtSittingDto -> nonNull(caseDetailsCourtSittingDto.getSittingStart()) && !caseDetailsCourtSittingDto.getSittingStart().isEmpty());
     }
 
     private static LocalDate getEarliestHearingDate(final CaseDetailsHearingDto hearingDto) {
@@ -256,11 +256,11 @@ public class CaseDetailsService {
         if (nonNull(hearingDto.getCourtSittings()) && !hearingDto.getCourtSittings().isEmpty()) {
             Optional<LocalDate> sittingDate = hearingDto.getCourtSittings()
                 .stream()
-                .filter(s -> nonNull(s.getSittingStart()))
-                .map(s -> {
+                .filter(caseDetailsCourtSittingDto -> nonNull(caseDetailsCourtSittingDto.getSittingStart()))
+                .map(caseDetailsCourtSittingDto -> {
                     try {
-                        return parse(s.getSittingStart()).toLocalDate();
-                    } catch (Exception e) {
+                        return parse(caseDetailsCourtSittingDto.getSittingStart()).toLocalDate();
+                    } catch (Exception exception) {
                         return null;
                     }
                 })
