@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import uk.gov.moj.cp.model.CourtCacheKey;
 import uk.gov.moj.cp.dto.inbound.CourtScheduleDto;
 import uk.gov.moj.cp.dto.inbound.CourtSittingDto;
 import uk.gov.moj.cp.dto.inbound.HearingDto;
@@ -75,8 +76,7 @@ public class CaseDetailsService {
         final List<CourtScheduleDto> courtSchedule = courtScheduleService.getCourtScheduleByCaseUrn(courtScheduleAccessToken, caseUrn);
         final ProsecutionCaseDTO prosecutionCaseDto = prosectionCaseService.getCaseStatus(prosecutionCaseAccessToken, caseUrn);
 
-        // Court house lookup cache — keyed by "courtHouseId|courtRoomId", scoped to this request
-        final Map<String, CourtHouseDto> courtHouseCache = new HashMap<>();
+        final Map<CourtCacheKey, CourtHouseDto> courtHouseCache = new HashMap<>();
 
         // Step 1: get the next hearings as a flat list
         final List<CaseDetailsHearingDto> nextHearings =
@@ -105,7 +105,7 @@ public class CaseDetailsService {
     private List<CaseDetailsHearingDto> buildNextHearings(
             final String caseUrn, final String courtHouseAccessToken,
             final List<CourtScheduleDto> courtSchedule,
-            final Map<String, CourtHouseDto> courtHouseCache) {
+            final Map<CourtCacheKey, CourtHouseDto> courtHouseCache) {
         return courtSchedule.stream()
             .map(schedule -> schedule.getHearings().stream()
                 .map(this::getHearingDetails)
@@ -120,7 +120,7 @@ public class CaseDetailsService {
     private List<CaseDetailsHearingDto> buildPastHearings(
             final String caseUrn, final String courtHouseAccessToken,
             final List<CourtScheduleDto> courtSchedule,
-            final Map<String, CourtHouseDto> courtHouseCache) {
+            final Map<CourtCacheKey, CourtHouseDto> courtHouseCache) {
         return courtSchedule.stream()
             .map(schedule -> schedule.getHearings().stream()
                 .map(this::getPastHearingDetails)
@@ -359,7 +359,7 @@ public class CaseDetailsService {
     }
 
     private CaseDetailsHearingDto enrichHearingWithCourtDetails(final String caseUrn, final String courtHouseAccessToken,
-                                                               CaseDetailsHearingDto hearing, final Map<String, CourtHouseDto> courtHouseCache) {
+                                                               CaseDetailsHearingDto hearing, final Map<CourtCacheKey, CourtHouseDto> courtHouseCache) {
         CaseDetailsWeekCommencingDto enrichedWeekCommencing = enrichWeekCommencingWithCourtDetails(
             courtHouseAccessToken,
             hearing.getWeekCommencing(),
@@ -409,15 +409,14 @@ public class CaseDetailsService {
 
     private CaseDetailsWeekCommencingDto enrichWeekCommencingWithCourtDetails(final String accessToken,
                                                                               final CaseDetailsWeekCommencingDto weekCommencing,
-                                                                              final Map<String, CourtHouseDto> courtHouseCache) {
+                                                                              final Map<CourtCacheKey, CourtHouseDto> courtHouseCache) {
         if (isNull(weekCommencing)) {
             return null;
         }
 
         final String courtHouseId = weekCommencing.getCourtHouse().getCourtHouseId();
-        final String cacheKey = courtHouseId + "|";
         final CourtHouseDto courtHouseDto = courtHouseCache.computeIfAbsent(
-            cacheKey, k -> courtHouseService.getCourtHouseById(accessToken, courtHouseId, null)
+            new CourtCacheKey(courtHouseId, null), k -> courtHouseService.getCourtHouseById(accessToken, courtHouseId, null)
         );
 
         return CaseDetailsWeekCommencingDto.builder()
@@ -430,13 +429,12 @@ public class CaseDetailsService {
 
     private List<CaseDetailsCourtSittingDto> enrichCourtSittingsWithCourtDetails(final String accessToken,
                                                                                  final List<CaseDetailsCourtSittingDto> courtSittings,
-                                                                                 final Map<String, CourtHouseDto> courtHouseCache) {
+                                                                                 final Map<CourtCacheKey, CourtHouseDto> courtHouseCache) {
         CourtHouseDto courtHouse = courtSittings.getFirst().getCourtHouse();
         final String courtHouseId = courtHouse.getCourtHouseId();
         final String courtRoomId = courtHouse.getCourtRoomId();
-        final String cacheKey = courtHouseId + "|" + (courtRoomId != null ? courtRoomId : "");
         final CourtHouseDto courtHouseDto = courtHouseCache.computeIfAbsent(
-            cacheKey, k -> courtHouseService.getCourtHouseById(accessToken, courtHouseId, courtRoomId)
+            new CourtCacheKey(courtHouseId, courtRoomId), k -> courtHouseService.getCourtHouseById(accessToken, courtHouseId, courtRoomId)
         );
 
         return courtSittings.stream()
@@ -450,5 +448,6 @@ public class CaseDetailsService {
             )
             .toList();
     }
+
 }
 
