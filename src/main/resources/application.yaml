@@ -20,7 +20,7 @@ springdoc:
 
 logging:
   level:
-    uk.gov.moj.cp: INFO
+    uk.gov.moj.cp: ${TMC_LOGGING_LEVEL:INFO}
 
 tmc:
   aws:
@@ -95,5 +95,15 @@ services:
     court-schedule-scope: ${TMC_SLC_TOKEN_SCOPE}
     reference-data-scope: ${TMC_RCC_TOKEN_SCOPE}
     cache:
-      # 8 hours originally, we set 7.5 hours
-      token-cache-ttl-minutes: ${TMC_TOKEN_CACHE_TTL_MINUTES:450}
+      # 8 hours originally, we set 6 hours
+      token-cache-ttl-minutes: ${TMC_TOKEN_CACHE_TTL_MINUTES:360}
+
+  rate-limit:
+    # Token bucket rate limiting:
+    # - Each external API request consumes 1 token
+    # - Each user can accumulate up to 300 tokens
+    # - The bucket is refilled with 150 tokens every 5 minutes (equivalent to 1 token every 2 seconds)
+    # - Once the bucket reaches 300 tokens, no additional tokens are added
+    maximum-tokens-capacity: ${TMC_RATE_LIMIT_MAXIMUM_TOKENS_CAPACITY:300}
+    refill-tokens: ${TMC_RATE_LIMIT_REFILL_TOKENS:150}
+    refill-period-minutes: ${TMC_RATE_LIMIT_REFILL_PERIOD_MINUTES:5}

@@ -25,16 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = RootController.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
-@TestPropertySource(properties = {
-    "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
-    "spring.datasource.username=sa",
-    "spring.datasource.password=",
-    "spring.jpa.hibernate.ddl-auto=create-drop",
-    "spring.flyway.enabled=false",
-    "management.endpoints.web.exposure.include=health,info",
-    "management.endpoint.health.show-details=always",
-    "spring.main.web-application-type=servlet"
-})
 class RootControllerIntegrationTest {
 
     @Autowired

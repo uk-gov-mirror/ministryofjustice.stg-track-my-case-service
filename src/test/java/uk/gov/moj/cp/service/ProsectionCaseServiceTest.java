@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.moj.cp.client.api.ProsecutionCaseAPIClient;
 import uk.gov.moj.cp.dto.outbound.CaseStatus;
@@ -17,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,7 +48,7 @@ class ProsectionCaseServiceTest {
 
     @Test
     void getCaseStatus_returnsNull_whenResponseBodyIsNull() {
-        when(prosecutionCaseAPIClient.getCaseDetails(anyString(), anyString()))
+        when(prosecutionCaseAPIClient.getCaseDetails(eq(accessToken), eq(caseUrn)))
             .thenReturn(ResponseEntity.ok().build());
 
         ProsecutionCaseDTO result = prosectionCaseService.getCaseStatus(accessToken, caseUrn);

@@ -14,7 +14,6 @@ public enum HearingType {
 
     TRIAL("Trial"),
     TRIAL_NO_WITNESSES("Trial - no witnesses"),
-    TRIAL_OF_ISSUE_NEWTON_HEARING("Trial of Issue / Newton hearing"),
     TRIAL_BACKER("Trial (Backer)"),
     TRIAL_FLOATER("Trial (Floater)"),
     TRIAL_FIRST_WARNING("Trial (First Warning)"),
@@ -25,7 +24,6 @@ public enum HearingType {
     TRIAL_RESERVE("Trial (Reserve)"),
     TRIAL_LINKED("Trial Linked"),
     TRIAL_FIXED_THIS_WEEK("Trial (Fixed for this Week)"),
-    TRIAL_OF_ISSUE("Trial of issue"),
 
     SENTENCE("Sentence"),
     SENTENCE_AT_ANOTHER_COURT("Sentence (at another Court)"),
@@ -33,6 +31,11 @@ public enum HearingType {
     SENTENCE_PROSECUTION_TO_ATTEND("Sentence (Prosecution to Attend)"),
     SENTENCE_PROSECUTION_AND_OFFICER_TO_ATTEND("Sentence (Prosecution and Officer to Attend)"),
     SENTENCE_PROSECUTION_RELEASED("Sentence (Prosecution Released)"),
+    COMMITTAL_FOR_SENTENCE("Committal for Sentence"),
+    COMMITTAL_FOR_SENTENCE_PART_HEARD("Committal for Sentence (Part Heard)"),
+    DEFERRED_SENTENCE("Deferred Sentence"),
+    DEFERRED_SENTENCE_RESPONDENT_RELEASED("Deferred Sentence (Respondent Released)"),
+    DEFERRED_SENTENCE_PROSECUTION_RELEASED("Deferred Sentence - Prosecution Released"),
 
     UNKNOWN("Unknown");
 

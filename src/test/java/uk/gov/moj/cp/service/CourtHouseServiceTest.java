@@ -19,7 +19,7 @@ import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -84,7 +84,7 @@ class CourtHouseServiceTest {
 
     @Test
     void testGetCourtHouseByCourtHouseById_returnsNull() {
-        when(courtHouseAPIClient.getCourtHouseById(anyString(), anyString(), anyString()))
+        when(courtHouseAPIClient.getCourtHouseById(eq(accessToken), eq("courtId"), eq("courtRoomId")))
             .thenReturn(ResponseEntity.status(200).build());
 
         CourtHouseDto result = courtHouseService.getCourtHouseById(accessToken, "courtId", "courtRoomId");

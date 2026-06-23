@@ -14,7 +14,7 @@ plugins {
 }
 
 group = 'uk.gov.moj.cp'
-version = '0.9.0'
+version = '0.10.0'
 
 java {
   sourceCompatibility = JavaVersion.VERSION_25
@@ -219,6 +219,10 @@ dependencies {
 
   implementation 'software.amazon.awssdk:secretsmanager:2.44.6'
   implementation 'software.amazon.awssdk:sts:2.44.6'
+
+  // API rate limit
+  implementation 'com.bucket4j:bucket4j_jdk17-core:8.19.0'
+  implementation 'com.github.ben-manes.caffeine:caffeine:3.2.4'
 
   // Metrics
   implementation 'org.springframework.boot:spring-boot-starter-actuator'

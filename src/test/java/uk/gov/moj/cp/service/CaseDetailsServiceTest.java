@@ -743,7 +743,7 @@ class CaseDetailsServiceTest {
             courtSittings
         );
         final HearingDto hearingDto3 = createHearing("3", HearingType.TRIAL_RESERVE.getValue(), courtSittings);
-        final HearingDto hearingDto4 = createHearing("4", HearingType.TRIAL_OF_ISSUE.getValue(), courtSittings);
+        final HearingDto hearingDto4 = createHearing("4", HearingType.TRIAL_BACKER.getValue(), courtSittings);
         final HearingDto hearingDto5 = createHearing("Invalid Type", courtSittings);
 
         final CourtScheduleDto scheduleDto = CourtScheduleDto.builder()

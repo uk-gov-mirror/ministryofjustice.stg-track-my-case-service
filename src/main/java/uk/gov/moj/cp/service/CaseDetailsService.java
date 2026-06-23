@@ -307,7 +307,7 @@ public class CaseDetailsService {
         } else {
             if (nonNull(enrichedCourtSittings)) {
                 log.info(
-                    "caseUrn -{} : hearingId - {} : CourtHouse Id - {} :  CourtRoom Id : {}",
+                    "caseUrn [{}] : hearingId [{}] : CourtHouse Id [{}] :  CourtRoom Id [{}]",
                     caseUrn,
                     hearing.getHearingId(),
                     enrichedCourtSittings.getFirst().getCourtHouse().getCourtHouseId(),
