@@ -1,6 +1,7 @@
 package uk.gov.moj.cp.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,6 +36,7 @@ class OAuthTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Should fetch and return token from client on first call")
     void shouldFetchAndReturnTokenFromClientOnFirstCall() {
         when(oauthTokenClient.getJwtToken(eq(AmpApiType.SLC))).thenReturn(TOKEN_RESPONSE);
 
@@ -45,6 +47,7 @@ class OAuthTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Should return cached token without calling client again")
     void shouldReturnCachedTokenWithoutCallingClientAgain() {
         when(oauthTokenClient.getJwtToken(AmpApiType.SLC)).thenReturn(TOKEN_RESPONSE);
 
@@ -56,6 +59,7 @@ class OAuthTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Should fetch new token from client when cached token is expired")
     void shouldFetchNewTokenWhenCacheIsExpired() {
         ReflectionTestUtils.setField(oauthTokenService, "tokenCacheTtlMinutes", -1L);
         when(oauthTokenClient.getJwtToken(AmpApiType.SLC)).thenReturn(TOKEN_RESPONSE);
@@ -67,6 +71,7 @@ class OAuthTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Should fetch new token from client after cache eviction for all API types")
     void shouldFetchNewTokenAfterCacheEviction() {
         when(oauthTokenClient.getJwtToken(eq(AmpApiType.SLC))).thenReturn(TOKEN_RESPONSE);
         when(oauthTokenClient.getJwtToken(eq(AmpApiType.RCC))).thenReturn(TOKEN_RESPONSE);
@@ -88,6 +93,7 @@ class OAuthTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Should cache tokens independently per API type")
     void shouldCacheTokensIndependentlyPerApiType() {
         when(oauthTokenClient.getJwtToken(AmpApiType.SLC))
             .thenReturn(new OAuthTokenResponse("Bearer", 3600, 3600, "slc-token"));
@@ -111,6 +117,7 @@ class OAuthTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Should propagate exception from token client")
     void shouldPropagateExceptionFromTokenClient() {
         when(oauthTokenClient.getJwtToken(eq(AmpApiType.PCD))).thenThrow(new RuntimeException("accessToken retrieval failed"));
 
@@ -119,5 +126,17 @@ class OAuthTokenServiceTest {
             .hasMessage("accessToken retrieval failed");
 
         verify(oauthTokenClient, times(1)).getJwtToken(eq(AmpApiType.PCD));
+    }
+
+    @Test
+    @DisplayName("Should evict empty cache without throwing an exception")
+    void shouldEvictEmptyCacheWithoutException() {
+        oauthTokenService.evictAllTokenCaches();
+
+        when(oauthTokenClient.getJwtToken(AmpApiType.SLC)).thenReturn(TOKEN_RESPONSE);
+        String token = oauthTokenService.getJwtToken(AmpApiType.SLC);
+
+        assertThat(token).isEqualTo("access-token-value");
+        verify(oauthTokenClient, times(1)).getJwtToken(AmpApiType.SLC);
     }
 }

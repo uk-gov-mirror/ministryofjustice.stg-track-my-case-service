@@ -52,3 +52,8 @@ services:
     prosecution-case-scope: api://scope/.default
     court-schedule-scope: api://scope/.default
     reference-data-scope: api://scope/.default
+
+  rate-limit:
+    maximum-tokens-capacity: ${TMC_RATE_LIMIT_MAXIMUM_TOKENS_CAPACITY:20}
+    refill-tokens: ${TMC_RATE_LIMIT_REFILL_TOKENS:10}
+    refill-period-minutes: ${TMC_RATE_LIMIT_REFILL_PERIOD_MINUTES:1}

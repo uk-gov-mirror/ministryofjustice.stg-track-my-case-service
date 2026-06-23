@@ -24,6 +24,12 @@ class HearingTypeTest {
         assertEquals(expected, HearingType.fromValue(expected.getValue().toLowerCase()));
     }
 
+    @ParameterizedTest
+    @EnumSource(HearingType.class)
+    void fromValue_returnsCorrectEnum_whenUpperCase(HearingType expected) {
+        assertEquals(expected, HearingType.fromValue(expected.getValue().toUpperCase()));
+    }
+
     @Test
     void fromValue_returnsNull_forNull() {
         assertNull(HearingType.fromValue(null));
@@ -45,9 +51,15 @@ class HearingTypeTest {
         "Trial",
         "Trial (Backer)",
         "Trial - no witnesses",
-        "Trial of Issue / Newton hearing",
         "Trial (Floater)",
         "Trial (First Warning)",
+        "Trial (Part Heard)",
+        "Trial of Preliminary Issue",
+        "Trial (Priority)",
+        "Trial (Previously Warned)",
+        "Trial (Reserve)",
+        "Trial Linked",
+        "Trial (Fixed for this Week)",
         "trial",
         "TRIAL"
     })
@@ -61,11 +73,36 @@ class HearingTypeTest {
         "Sentence (at another Court)",
         "Sentence (Officer to Attend)",
         "Sentence (Prosecution to Attend)",
+        "Sentence (Prosecution and Officer to Attend)",
+        "Sentence (Prosecution Released)",
+        "Committal for Sentence",
+        "Committal for Sentence (Part Heard)",
+        "Deferred Sentence",
+        "Deferred Sentence (Respondent Released)",
+        "Deferred Sentence - Prosecution Released",
         "sentence",
         "SENTENCE"
     })
     void filterHearingType_returnsSentence_forSentenceVariants(String value) {
         assertEquals(HearingType.SENTENCE, HearingType.filterHearingType(value));
+    }
+
+    @Test
+    void filterHearingType_throws_forUnknownEnumValue() {
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> HearingType.filterHearingType("Unknown")
+        );
+        assertTrue(ex.getMessage().contains("is not an expected hearing type Trial or Sentence"));
+    }
+
+    @Test
+    void filterHearingType_throws_forNullInput() {
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> HearingType.filterHearingType(null)
+        );
+        assertTrue(ex.getMessage().contains("is not an expected hearing type Trial or Sentence"));
     }
 
     @Test
