@@ -217,7 +217,7 @@ jobs:
           --set securityContext.capabilities.drop=["ALL"] \
           --set securityContext.runAsNonRoot=true \
           --set securityContext.seccompProfile.type="RuntimeDefault" \
-          --set Networkpolicy.Ingress="track-my-case-prod" \
+          --set Networkpolicy.Ingress="ingress-controllers" \
           --set ServiceAccount.RoleARN=$APP_ROLE_ARN \
           "${custom_variables_array[@]}"
           # > rendered.yaml
@@ -241,7 +241,7 @@ jobs:
           --set securityContext.capabilities.drop=["ALL"] \
           --set securityContext.runAsNonRoot=true \
           --set securityContext.seccompProfile.type="RuntimeDefault" \
-          --set Networkpolicy.Ingress="track-my-case-prod" \
+          --set Networkpolicy.Ingress="ingress-controllers" \
           --set ServiceAccount.RoleARN=$APP_ROLE_ARN \
           "${custom_variables_array[@]}"
 
