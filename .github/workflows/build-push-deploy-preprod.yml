@@ -211,13 +211,16 @@ jobs:
           --set WebApp.Image.Repository=$ECR_REPO_WEBAPP \
           --set WebApp.Image.Tag=$NEW_TAG_V \
           --set WebApp.Name=$KUBE_NAMESPACE \
+          --set WebApp.BaseHost="internal.cloud-platform.service.justice.gov.uk" \
           --set-string WebApp.variables_hash="$variables_hash" \
+          --set Ingress.Enabled=true \
+          --set Ingress.ModSec.Class="internal" \
           --set Ingress.ModSec.Enabled=true \
           --set securityContext.allowPrivilegeEscalation=false \
           --set securityContext.capabilities.drop=["ALL"] \
           --set securityContext.runAsNonRoot=true \
           --set securityContext.seccompProfile.type="RuntimeDefault" \
-          --set Networkpolicy.Ingress="track-my-case-preprod" \
+          --set Networkpolicy.Ingress="ingress-controllers" \
           --set ServiceAccount.RoleARN=$APP_ROLE_ARN \
           "${custom_variables_array[@]}"
           # > rendered.yaml
@@ -232,13 +235,16 @@ jobs:
           --set WebApp.Image.Repository=$ECR_REPO_WEBAPP \
           --set WebApp.Image.Tag=$NEW_TAG_V \
           --set WebApp.Name=$KUBE_NAMESPACE \
+          --set WebApp.BaseHost="internal.cloud-platform.service.justice.gov.uk" \
           --set-string WebApp.variables_hash="$variables_hash" \
+          --set Ingress.Enabled=true \
+          --set Ingress.ModSec.Class="internal" \
           --set Ingress.ModSec.Enabled=true \
           --set securityContext.allowPrivilegeEscalation=false \
           --set securityContext.capabilities.drop=["ALL"] \
           --set securityContext.runAsNonRoot=true \
           --set securityContext.seccompProfile.type="RuntimeDefault" \
-          --set Networkpolicy.Ingress="track-my-case-preprod" \
+          --set Networkpolicy.Ingress="ingress-controllers" \
           --set ServiceAccount.RoleARN=$APP_ROLE_ARN \
           "${custom_variables_array[@]}"
 
