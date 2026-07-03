@@ -111,5 +111,7 @@ services:
 notifications:
   gov-notify-api-key: ${GOV_NOTIFY_API_KEY:xxx}
   user-logged-in-email-template-id: ${TMC_USER_LOGGED_IN_TEMPLATE_ID:xxx}
+  text-message-template-id: ${TMC_TEXT_MESSQGE_TEMPLATE_ID:xxx}
   service-url: ${TMC_SERVICE_URL:https://track-my-case-dev.apps.live.cloud-platform.service.justice.gov.uk}
-  target-email: ${TMC_TARGET_EMAIL:target@email}
+  target-email: ${TMC_TARGET_EMAIL:xxx}
+  target-mobile: ${TMC_TARGET_MOBILE:xxx}

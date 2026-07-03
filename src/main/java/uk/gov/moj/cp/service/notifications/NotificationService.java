@@ -5,6 +5,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.ReceivedTextMessageList;
+import uk.gov.service.notify.SendSmsResponse;
+import uk.gov.service.notify.TemplateList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +37,52 @@ public class NotificationService {
                 null
             );
             log.info("A user {} searched for the case {}", userEmail, caseUrn);
+        }
+    }
+
+    @SneakyThrows
+    public void sendTextMessageForTheCaseNotification(final String userMobile, final String caseUrn) {
+        final String targetMobile = notificationProperties.getTargetMobile();
+        final String serviceUrl = notificationProperties.getServiceUrl();
+        SendSmsResponse sendSmsResponse = null;
+
+        if (StringUtils.isNoneEmpty(userMobile) && StringUtils.isNoneEmpty(caseUrn)) {
+            try {
+                sendSmsResponse = emailService.sendTextMessage(
+                    targetMobile,
+                    notificationProperties.getTextMessageTemplateId(),
+                    addProperties(userMobile, caseUrn, serviceUrl),
+                    null
+                );
+                log.info("A user {} searched for the case {}", userMobile, caseUrn);
+            } catch (Exception e) {
+                log.error("A user {} searched for the case {}", userMobile, caseUrn);
+            }
+        }
+
+        try {
+            TemplateList allSmsTemplates = emailService.getAllTemplates("sms");
+            log.info("A user {} searched for the case {}", userMobile, caseUrn);
+        } catch (Exception e) {
+            log.error("A user {} searched for the case {}", userMobile, caseUrn);
+        }
+        try {
+            TemplateList allEmailTemplates = emailService.getAllTemplates("email");
+            log.info("A user {} searched for the case {}", userMobile, caseUrn);
+        } catch (Exception e) {
+            log.error("A user {} searched for the case {}", userMobile, caseUrn);
+        }
+        try {
+            ReceivedTextMessageList receivedTextMessages = emailService.getReceivedTextMessages(sendSmsResponse.getNotificationId().toString());
+            log.info("A user {} searched for the case {}", userMobile, caseUrn);
+        } catch (Exception e) {
+            log.error("A user {} searched for the case {}", userMobile, caseUrn);
+        }
+        try {
+            Notification notification = emailService.getNotificationById(sendSmsResponse.getNotificationId().toString());
+            log.info("A user {} searched for the case {}", userMobile, caseUrn);
+        } catch (Exception e) {
+            log.error("A user {} searched for the case {}", userMobile, caseUrn);
         }
     }
 

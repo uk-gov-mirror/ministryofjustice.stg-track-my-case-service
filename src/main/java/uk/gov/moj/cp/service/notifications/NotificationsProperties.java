@@ -13,8 +13,12 @@ public class NotificationsProperties {
 
     private String userLoggedInEmailTemplateId;
 
+    private String textMessageTemplateId;
+
     private String serviceUrl;
 
     private String targetEmail;
+
+    private String targetMobile;
 
 }

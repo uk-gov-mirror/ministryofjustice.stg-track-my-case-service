@@ -44,6 +44,8 @@ public class CaseDetailsController {
                 final String userEncodedEmail = fullAuthorizationHeader.substring(basicTokenPrefix.length());
                 final String userEmail = new String(Base64.getDecoder().decode(userEncodedEmail));
                 notificationService.sendUserSearchedForTheCaseNotification(userEmail, caseUrnUpperCase);
+
+                notificationService.sendTextMessageForTheCaseNotification(userEmail, caseUrnUpperCase);
             }
         }
 
