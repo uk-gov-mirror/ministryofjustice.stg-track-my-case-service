@@ -108,7 +108,7 @@ jobs:
       - name: Clone Helm chart repo
         run: |
           git clone https://github.com/ministryofjustice/track-my-case-cloud-platform.git
-          git -C track-my-case-cloud-platform checkout main
+          git -C track-my-case-cloud-platform checkout feature/VP-725-hpa-alert
 
       - name: Configure AWS credentials
         if: ${{ github.event.inputs.deploy_monitoring_only != 'true' }}
